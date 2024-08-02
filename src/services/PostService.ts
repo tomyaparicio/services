@@ -3,6 +3,7 @@ import {ref} from 'vue'
 class PostServices {
     private posts 
     private imageUrl
+    
    constructor() {
             this.posts = ref([])
             this.imageUrl = ref('')
@@ -23,7 +24,6 @@ class PostServices {
             console.log(error)
         }
     }
-
     async ImgRick () {
         try {
             const url = "https://rickandmortyapi.com/api/character/avatar/322.jpeg"
