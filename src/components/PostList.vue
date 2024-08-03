@@ -9,33 +9,18 @@
           <v-card-title>
             <h3>Listado de Personajes</h3>
           </v-card-title>
-          <ul class="post-list text-center">
-            <v-btn class="btnclass" @click="openDialog">
-              <v-img  contain class="button-img" s :src="imageUrl" alt="Rick and Morty Character" />
-              <span>{{ posts.name }}</span>
-            </v-btn>
-
-            <v-dialog class="dialog" v-model="dialog">
-              <v-card>
-                <v-card-title class="ColorPrimario">
-                  <h1 class="text-center">{{ posts.name }}</h1>
-                </v-card-title>
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="6">
-                      <h3>Status: {{ posts.status }}</h3>
-                      <h3>Especie: {{ posts.species }}</h3>
-                      <h3>Genero: {{ posts.gender }}</h3>
-                      <h3>Location: {{ posts.location.name }}</h3>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-img contain class="img" :src="imageUrl" alt="Rick and Morty Character" />
-                    </v-col>
-                    <v-btn @click="closeDialog" class="ColorPrimario" elevation="10">Cerrar</v-btn>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-            </v-dialog>
+          <ul class="postlist text-center" >
+            <CharacterDrawer  
+            v-for="character in characters" 
+            :key="character.id" 
+            :name="character.name"
+            :status="character.status"
+            :species="character.species"
+            :gender="character.gender"
+            :image="character.image"
+            :origin="character.origin"
+            :id="character.id"
+             />
           </ul>
         </v-card-text>
       </v-card>
@@ -44,37 +29,33 @@
 </template>
 
 <script lang="ts" setup>
+import CharacterDrawer from './CharacterDrawer.vue';
 import PostServices from '@/services/PostService'; 
-import { onMounted, ref  } from 'vue';
+import { onMounted } from 'vue';
 
+interface Character {
+    id: number,
+    name: string,
+    status: string,
+    species: string,
+    gender: string,
+    image: string,
+    origin:{
+      name:string,
+    }
+}
 const service = new PostServices();
-const posts = service.getPost();
-const imageUrl = service.getImageUrl();
-const dialog = ref(false);
+const characters = service.getPost() as unknown as Character[];
 
-let simpleRick = ref({
-  name: '',
-  status: '',
-  species: '',
-  gender: '',
-  location: {
-    name: ''
-  }
-});
+
+
 
 onMounted(async () => {
   await service.fetchAll();
   await service.ImgRick();
 });
 
-const openDialog = async () => {
-  dialog.value = true;
-  await service.ImgRick();
-};
 
-const closeDialog = async () => {
-  dialog.value = false;
-};
 </script>
 
 <style scoped>
@@ -113,5 +94,11 @@ const closeDialog = async () => {
 
 .container {
   background-color: rgb(0, 0, 0);
+}
+.postlist{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
 }
 </style>

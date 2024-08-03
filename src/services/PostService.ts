@@ -16,10 +16,11 @@ class PostServices {
     }
     async fetchAll() {   
         try {
-            const url = "https://rickandmortyapi.com/api/character/322"
+            const url = "https://rickandmortyapi.com/api/character"
             const response =  await fetch(url)
             const json = await response.json()
-            this.posts.value = await json
+            this.posts.value =  json.results
+            console.log(json)
         } catch (error) {
             console.log(error)
         }
